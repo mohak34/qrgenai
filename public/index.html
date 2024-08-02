@@ -1,0 +1,58 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <h1>QR CODE GENERATOR</h1>
+      <button onclick="generateQRCode()">Generate</button>
+    </div>
+    <script>
+      let registrationNumbers = [];
+
+      async function fetchRegistrationNumbers() {
+        try {
+          const response = await fetch("/registrations");
+          if (response.ok) {
+            const data = await response.json();
+            registrationNumbers = data.registrationNumbers;
+            console.log("Fetched registration numbers:", registrationNumbers); // Log the fetched registration numbers
+          } else {
+            console.error("Failed to fetch registration numbers");
+            alert("Failed to fetch registration numbers");
+          }
+        } catch (error) {
+          console.error("Error fetching registration numbers:", error);
+          alert("Error fetching registration numbers");
+        }
+      }
+
+      async function generateQRCode() {
+        try {
+          const response = await fetch("/generate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ registrationNumbers }),
+          });
+
+          if (response.ok) {
+            alert("QR Codes generated successfully");
+          } else {
+            console.error("Failed to generate QR Codes");
+            alert("Failed to generate QR Codes");
+          }
+        } catch (error) {
+          console.error("Error generating QR Codes:", error);
+          alert("Error generating QR Codes");
+        }
+      }
+
+      // Fetch registration numbers when the page loads
+      window.onload = fetchRegistrationNumbers;
+    </script>
+  </body>
+</html>
